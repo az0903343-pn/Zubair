@@ -67,21 +67,19 @@ st.markdown(
     }
     .animate-in { animation: fadeInUp 0.8s cubic-bezier(0.22,1,0.36,1) both; }
 
-    /* Hero / Intro overlay */
-    #intro-overlay {
-        position: fixed; inset: 0; background: #070709; z-index: 9999;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        transition: opacity 0.6s ease;
-    }
-    #intro-overlay.hidden { opacity: 0; pointer-events: none; }
+    /* Intro screen styling */
+    .intro-wrap { text-align: center; padding: 120px 20px; animation: fadeInUp 1s both; }
     .intro-logo { font-size: 5rem; font-weight: 800; letter-spacing: -2px;
         background: linear-gradient(90deg, #fff, #ff7a1a);
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
-    .intro-sub { font-size: 1.25rem; color: #a8a8b2; margin-bottom: 40px; }
-    .intro-play { width: 80px; height: 80px; border-radius: 50%;
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0 0 16px; }
+    .intro-sub { font-size: 1.25rem; color: #a8a8b2; margin: 0 0 48px; }
+    .intro-btn .stButton > button {
+        width: 88px; height: 88px; border-radius: 50%; padding: 0; font-size: 2rem;
         background: linear-gradient(135deg, #ff7a1a, #ff4d00);
-        animation: pulseGlow 2s infinite; display: flex; align-items: center; justify-content: center;
-        font-size: 2rem; color: #fff; cursor: pointer; border: none; outline: none; }
+        animation: pulseGlow 2s infinite; display: inline-flex; align-items: center; justify-content: center;
+        color: #fff; border: none; outline: none;
+    }
+    .intro-btn .stButton > button:hover { transform: scale(1.05); box-shadow: 0 0 40px rgba(255,110,0,0.7); }
 
     /* Hero section behind */
     .hero { padding: 70px 20px 40px; text-align: center; position: relative; overflow: hidden; }
@@ -209,15 +207,19 @@ if "recommendations" not in st.session_state:
     st.session_state.recommendations = None
 
 # ---------------------------------------------------------------------------
-# Intro overlay
+# Intro screen (Streamlit native - no black screen bug)
 # ---------------------------------------------------------------------------
 if st.session_state.show_intro:
-    st.markdown('<div id="intro-overlay">', unsafe_allow_html=True)
+    st.markdown('<div class="intro-wrap">', unsafe_allow_html=True)
     st.markdown('<div class="intro-logo">Vehicle Finder</div>', unsafe_allow_html=True)
     st.markdown('<div class="intro-sub">Aap ka budget, aap ka perfect vehicle</div>', unsafe_allow_html=True)
-    if st.button("▶ Continue", key="intro_play", help="Enter the app"):
-        st.session_state.show_intro = False
-        st.rerun()
+    ib1, ib2, ib3 = st.columns([1, 1, 1])
+    with ib2:
+        st.markdown('<div class="intro-btn">', unsafe_allow_html=True)
+        if st.button("▶ Continue", key="intro_play", help="Enter the app"):
+            st.session_state.show_intro = False
+            st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
     st.stop()
 
@@ -390,7 +392,7 @@ if st.session_state.recommendations is not None:
                 st.markdown(f'<div class="meta">{row["Mileage_kmpl"]} kmpl &bull; {row["Seats"]} seats &bull; Safety {row["Safety_Rating"]}/5</div>', unsafe_allow_html=True)
                 st.markdown(f'<div class="advantage">Advantage Score: {row["Advantage_Score"]}/100</div>', unsafe_allow_html=True)
                 st.caption(row.get("Description",""))
-                st.markdown(f'<a href="{row.get("Link","#")}" target="_blank"><button class="stButton link" style="width:100%;margin-top:8px;">Open Website ↗</button></a>', unsafe_allow_html=True)
+                st.link_button("Open Website ↗", row.get("Link", "#"), help="Direct website link")
                 st.markdown('</div>', unsafe_allow_html=True)
 
         # Comparison chart
