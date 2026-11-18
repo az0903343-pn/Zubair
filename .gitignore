@@ -1,0 +1,25 @@
+# Environment / secrets (never commit real keys)
+.env
+.env.local
+*.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+.env
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Model artifacts (trained locally / on Kaggle; regenerate via train_model.py)
+model/*.joblib
+model/*.csv
+
+# OS
+.DS_Store
+Thumbs.db
